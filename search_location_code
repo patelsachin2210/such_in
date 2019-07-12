@@ -1,0 +1,53 @@
+private void editSearchLocationInitilization() {
+
+        autocompleteFragment_edit_location = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.location_fragment);
+
+        // Area Boundary
+
+        RectangularBounds rectangularBounds = RectangularBounds.newInstance(new LatLngBounds(new LatLng(28.587182, 76.903445), new LatLng(28.7241954, 77.2231256)));
+        autocompleteFragment_edit_location.setLocationBias(rectangularBounds);
+
+        if (!com.google.android.libraries.places.api.Places.isInitialized()) {
+            com.google.android.libraries.places.api.Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+        }
+
+        placesClient = com.google.android.libraries.places.api.Places.createClient(this);
+
+        autocompleteFragment_edit_location.setPlaceFields(Arrays.asList(Place.Field.LAT_LNG,
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.ADDRESS));
+
+        autocompleteFragment_edit_location.setCountry("ind");
+
+        autocompleteFragment_edit_location.setTypeFilter(TypeFilter.ADDRESS);
+        autocompleteFragment_edit_location.setTypeFilter(TypeFilter.REGIONS);
+
+        autocompleteFragment_edit_location.setAllowEnterTransitionOverlap(true);
+        //   autocompleteFragment_edit_location.setTypeFilter(TypeFilter.CITIES);
+        autocompleteFragment_edit_location.setHint("Enter Your Location");
+
+
+        autocompleteFragment_edit_location.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                autocompleteFragment_edit_location.setText(place.getAddress());
+
+
+                Log.d(TAG, "onPlaceSelected: place id latlng" + place.getLatLng());
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+
+                //  Toast.makeText(New_Form.this, status.getStatus().toString(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onError: ");
+            }
+        });
+
+
+        Log.d("googleMaps AutoComplete", "editSearchLocationInitilization() returned: " + Place.Field.ADDRESS + " " + Place.Field.LAT_LNG);
+
+
+    }
